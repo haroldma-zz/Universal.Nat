@@ -13,12 +13,19 @@ namespace Universal.Nat
     {
         private static readonly TimeSpan CheckPeriod = TimeSpan.FromMinutes(10.0);
         private readonly List<INatDevice> _devices = new List<INatDevice>();
+        private readonly string _mappingName;
         private ThreadPoolTimer _checkMappingsTimer;
         private Task _currentTask;
         private Mapping _portMapping;
 
-        public NatManager(int port)
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="NatManager" /> class.
+        /// </summary>
+        /// <param name="port">The port.</param>
+        /// <param name="mappingName">Name to use for port mapping.</param>
+        public NatManager(int port, string mappingName = "Universal.Nat")
         {
+            _mappingName = mappingName;
             NatUtility.DeviceFound += DeviceFound;
             NatUtility.DeviceLost += DeviceLost;
             Port = port;
@@ -133,7 +140,7 @@ namespace Universal.Nat
         {
             var mapping = new Mapping(_portMapping.Protocol, _portMapping.PrivatePort, _portMapping.PublicPort)
             {
-                Description = "Universal.Torrent: " + device.LocalAddress
+                Description = $"{_mappingName}: " + device.LocalAddress
             };
             await Task.Run(() =>
             {
@@ -179,7 +186,7 @@ namespace Universal.Nat
             {
                 var mappings = GetAllMappings(args.Device);
                 var oldMappings =
-                    mappings.Where(m => m.Description.Equals("Universal.Torrent: " + args.Device.LocalAddress));
+                    mappings.Where(m => m.Description.Equals($"{_mappingName}: " + args.Device.LocalAddress));
                 foreach (var mapping in oldMappings)
                     await RemovePortMapAsync(args.Device, mapping);
                 await CreatePortMapAsync(args.Device);
