@@ -1,7 +1,7 @@
 ﻿using System;
-using Torrent.Uwp.Nat.Enums;
+using Universal.Nat.Enums;
 
-namespace Torrent.Uwp.Nat
+namespace Universal.Nat
 {
     public class Mapping
     {

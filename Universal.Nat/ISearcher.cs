@@ -1,8 +1,8 @@
 using System;
 using System.Net;
-using Torrent.Uwp.Nat.EventArgs;
+using Universal.Nat.EventArgs;
 
-namespace Torrent.Uwp.Nat
+namespace Universal.Nat
 {
     public delegate void NatDeviceCallback(INatDevice device);
 

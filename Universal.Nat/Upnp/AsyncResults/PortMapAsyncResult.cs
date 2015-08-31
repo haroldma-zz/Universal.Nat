@@ -27,11 +27,11 @@
 
 using System;
 using System.Net;
-using Torrent.Uwp.Nat.AsyncResults;
-using Torrent.Uwp.Nat.Upnp.Messages;
-using Torrent.Uwp.Nat.Upnp.Messages.Requests;
+using Universal.Nat.AsyncResults;
+using Universal.Nat.Upnp.Messages;
+using Universal.Nat.Upnp.Messages.Requests;
 
-namespace Torrent.Uwp.Nat.Upnp.AsyncResults
+namespace Universal.Nat.Upnp.AsyncResults
 {
     internal class PortMapAsyncResult : AsyncResult
     {

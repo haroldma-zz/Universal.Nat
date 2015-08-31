@@ -26,7 +26,7 @@
 
 using System;
 
-namespace Torrent.Uwp.Nat.Exceptions
+namespace Universal.Nat.Exceptions
 {
     public class MappingException : Exception
     {

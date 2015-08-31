@@ -9,10 +9,10 @@ using Windows.Networking;
 using Windows.Networking.Sockets;
 using Windows.Storage.Streams;
 using Windows.System.Threading;
-using Torrent.Uwp.Nat.EventArgs;
-using Torrent.Uwp.Nat.Upnp;
+using Universal.Nat.EventArgs;
+using Universal.Nat.Upnp;
 
-namespace Torrent.Uwp.Nat
+namespace Universal.Nat
 {
     internal class UpnpSearcher : ISearcher
     {

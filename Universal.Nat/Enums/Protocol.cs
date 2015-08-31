@@ -1,4 +1,4 @@
-﻿namespace Torrent.Uwp.Nat.Enums
+﻿namespace Universal.Nat.Enums
 {
     public enum Protocol
     {

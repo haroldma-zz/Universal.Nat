@@ -27,9 +27,9 @@
 using System;
 using System.Net;
 using System.Xml.Linq;
-using Torrent.Uwp.Nat.Enums;
+using Universal.Nat.Enums;
 
-namespace Torrent.Uwp.Nat.Upnp.Messages.Responses
+namespace Universal.Nat.Upnp.Messages.Responses
 {
     internal class GetGenericPortMappingEntryResponseMessage : MessageBase
     {

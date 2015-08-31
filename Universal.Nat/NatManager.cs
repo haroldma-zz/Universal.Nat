@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.System.Threading;
-using Torrent.Uwp.Nat.Enums;
-using Torrent.Uwp.Nat.EventArgs;
-using Torrent.Uwp.Nat.Exceptions;
+using Universal.Nat.Enums;
+using Universal.Nat.EventArgs;
+using Universal.Nat.Exceptions;
 
-namespace Torrent.Uwp.Nat
+namespace Universal.Nat
 {
     public class NatManager
     {

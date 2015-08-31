@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Torrent.Uwp.Nat.EventArgs;
+using Universal.Nat.EventArgs;
 
-namespace Torrent.Uwp.Nat
+namespace Universal.Nat
 {
     public static class NatUtility
     {

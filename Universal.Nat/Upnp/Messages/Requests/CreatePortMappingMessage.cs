@@ -27,9 +27,9 @@
 using System.Globalization;
 using System.Net;
 using System.Text;
-using Torrent.Uwp.Nat.Enums;
+using Universal.Nat.Enums;
 
-namespace Torrent.Uwp.Nat.Upnp.Messages.Requests
+namespace Universal.Nat.Upnp.Messages.Requests
 {
     internal class CreatePortMappingMessage : MessageBase
     {

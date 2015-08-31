@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Net;
-using Torrent.Uwp.Nat.Enums;
+using Universal.Nat.Enums;
 
-namespace Torrent.Uwp.Nat
+namespace Universal.Nat
 {
     public interface INatDevice
     {

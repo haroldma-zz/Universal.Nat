@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 
-namespace Torrent.Uwp.Nat.AsyncResults
+namespace Universal.Nat.AsyncResults
 {
     internal class AsyncResult : IAsyncResult
     {

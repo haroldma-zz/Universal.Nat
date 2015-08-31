@@ -7,8 +7,8 @@
     <ProjectGuid>{4B7C52AE-58D8-4666-9A46-17CADA2DE40F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Torrent.Uwp.Nat</RootNamespace>
-    <AssemblyName>Torrent.Uwp.Nat</AssemblyName>
+    <RootNamespace>Universal.Nat</RootNamespace>
+    <AssemblyName>Universal.Nat</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.10240.0</TargetPlatformVersion>

@@ -28,7 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 
-namespace Torrent.Uwp.Nat.Upnp.AsyncResults
+namespace Universal.Nat.Upnp.AsyncResults
 {
     internal class GetAllMappingsAsyncResult : PortMapAsyncResult
     {

@@ -28,7 +28,7 @@
 using System;
 using System.Net;
 
-namespace Torrent.Uwp.Nat.Upnp.Messages.Responses
+namespace Universal.Nat.Upnp.Messages.Responses
 {
     internal class CreatePortMappingResponseMessage : MessageBase
     {

@@ -7,14 +7,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
-using Torrent.Uwp.Nat.Enums;
-using Torrent.Uwp.Nat.Exceptions;
-using Torrent.Uwp.Nat.Upnp.AsyncResults;
-using Torrent.Uwp.Nat.Upnp.Messages;
-using Torrent.Uwp.Nat.Upnp.Messages.Requests;
-using Torrent.Uwp.Nat.Upnp.Messages.Responses;
+using Universal.Nat.Enums;
+using Universal.Nat.Exceptions;
+using Universal.Nat.Upnp.AsyncResults;
+using Universal.Nat.Upnp.Messages;
+using Universal.Nat.Upnp.Messages.Requests;
+using Universal.Nat.Upnp.Messages.Responses;
 
-namespace Torrent.Uwp.Nat.Upnp
+namespace Universal.Nat.Upnp
 {
     public sealed class UpnpNatDevice : AbstractNatDevice, IEquatable<UpnpNatDevice>
     {

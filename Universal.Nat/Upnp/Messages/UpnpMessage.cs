@@ -32,9 +32,9 @@ using System.Net;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
-using Torrent.Uwp.Nat.Upnp.Messages.Responses;
+using Universal.Nat.Upnp.Messages.Responses;
 
-namespace Torrent.Uwp.Nat.Upnp.Messages
+namespace Universal.Nat.Upnp.Messages
 {
     internal abstract class MessageBase
     {

@@ -26,7 +26,7 @@
 
 using System.Net;
 
-namespace Torrent.Uwp.Nat.Upnp.Messages.Requests
+namespace Universal.Nat.Upnp.Messages.Requests
 {
     internal class GetExternalIPAddressMessage : MessageBase
     {

@@ -27,7 +27,7 @@
 using System;
 using System.Net;
 
-namespace Torrent.Uwp.Nat.Upnp.Messages
+namespace Universal.Nat.Upnp.Messages
 {
     internal class ErrorMessage : MessageBase
     {

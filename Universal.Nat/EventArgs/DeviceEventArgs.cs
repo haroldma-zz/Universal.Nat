@@ -1,4 +1,4 @@
-﻿namespace Torrent.Uwp.Nat.EventArgs
+﻿namespace Universal.Nat.EventArgs
 {
     public class DeviceEventArgs : System.EventArgs
     {

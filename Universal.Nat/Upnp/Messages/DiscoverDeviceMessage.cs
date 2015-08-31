@@ -26,7 +26,7 @@
 
 using System.Text;
 
-namespace Torrent.Uwp.Nat.Upnp.Messages
+namespace Universal.Nat.Upnp.Messages
 {
     internal static class DiscoverDeviceMessage
     {
