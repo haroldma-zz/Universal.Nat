@@ -1,8 +1,10 @@
 //
 // Authors:
-//   Alan McGovern alan.mcgovern@gmail.com
+//   Alan McGovern  alan.mcgovern@gmail.com
+//   Lucas Ontivero lucas.ontivero@gmail.com
 //
 // Copyright (C) 2006 Alan McGovern
+// Copyright (C) 2014 Lucas Ontivero
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -24,35 +26,29 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System.Net;
-using System.Text;
-using Universal.Nat.Enums;
+using System.Collections.Generic;
 
-namespace Universal.Nat.Upnp.Messages.Requests
+namespace Open.Nat
 {
-    internal class GetSpecificPortMappingEntryMessage : MessageBase
+    internal class GetSpecificPortMappingEntryRequestMessage : RequestMessageBase
     {
-        internal int ExternalPort;
-        internal Protocol Protocol;
+        private readonly int _externalPort;
+        private readonly Protocol _protocol;
 
-        public GetSpecificPortMappingEntryMessage(Protocol protocol, int externalPort, UpnpNatDevice device)
-            : base(device)
+        public GetSpecificPortMappingEntryRequestMessage(Protocol protocol, int externalPort)
         {
-            Protocol = protocol;
-            ExternalPort = externalPort;
+            _protocol = protocol;
+            _externalPort = externalPort;
         }
 
-        public override WebRequest Encode(out byte[] body)
+        public override IDictionary<string, object> ToXml()
         {
-            var sb = new StringBuilder(64);
-            var writer = CreateWriter(sb);
-
-            WriteFullElement(writer, "NewRemoteHost", string.Empty);
-            WriteFullElement(writer, "NewExternalPort", ExternalPort.ToString());
-            WriteFullElement(writer, "NewProtocol", Protocol == Protocol.Tcp ? "TCP" : "UDP");
-            writer.Flush();
-
-            return CreateRequest("GetSpecificPortMappingEntry", sb.ToString(), out body);
+            return new Dictionary<string, object>
+                       {
+                           {"NewRemoteHost", string.Empty},
+                           {"NewExternalPort", _externalPort},
+                           {"NewProtocol", _protocol == Protocol.Tcp ? "TCP" : "UDP"}
+                       };
         }
     }
 }

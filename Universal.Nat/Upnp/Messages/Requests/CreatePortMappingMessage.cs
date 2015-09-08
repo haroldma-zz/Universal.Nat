@@ -1,8 +1,10 @@
 //
 // Authors:
-//   Alan McGovern alan.mcgovern@gmail.com
+//   Alan McGovern  alan.mcgovern@gmail.com
+//   Lucas Ontivero lucas.ontivero@gmail.com
 //
 // Copyright (C) 2006 Alan McGovern
+// Copyright (C) 2014 Lucas Ontivero
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -24,52 +26,37 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System.Globalization;
+using System.Collections.Generic;
 using System.Net;
-using System.Text;
-using Universal.Nat.Enums;
 
-namespace Universal.Nat.Upnp.Messages.Requests
+namespace Open.Nat
 {
-    internal class CreatePortMappingMessage : MessageBase
+    internal class CreatePortMappingRequestMessage : RequestMessageBase
     {
-        #region Constructors
-
-        public CreatePortMappingMessage(Mapping mapping, IPAddress localIpAddress, UpnpNatDevice device)
-            : base(device)
-        {
-            _mapping = mapping;
-            _localIpAddress = localIpAddress;
-        }
-
-        #endregion
-
-        public override WebRequest Encode(out byte[] body)
-        {
-            var culture = CultureInfo.InvariantCulture;
-
-            var builder = new StringBuilder(256);
-            var writer = CreateWriter(builder);
-
-            WriteFullElement(writer, "NewRemoteHost", string.Empty);
-            WriteFullElement(writer, "NewExternalPort", _mapping.PublicPort.ToString(culture));
-            WriteFullElement(writer, "NewProtocol", _mapping.Protocol == Protocol.Tcp ? "TCP" : "UDP");
-            WriteFullElement(writer, "NewInternalPort", _mapping.PrivatePort.ToString(culture));
-            WriteFullElement(writer, "NewInternalClient", _localIpAddress.ToString());
-            WriteFullElement(writer, "NewEnabled", "1");
-            WriteFullElement(writer, "NewPortMappingDescription",
-                string.IsNullOrEmpty(_mapping.Description) ? "Universal.Nat" : _mapping.Description);
-            WriteFullElement(writer, "NewLeaseDuration", _mapping.Lifetime.ToString());
-
-            writer.Flush();
-            return CreateRequest("AddPortMapping", builder.ToString(), out body);
-        }
-
-        #region Private Fields
-
-        private readonly IPAddress _localIpAddress;
         private readonly Mapping _mapping;
 
-        #endregion
+        public CreatePortMappingRequestMessage(Mapping mapping)
+        {
+            _mapping = mapping;
+        }
+
+        public override IDictionary<string, object> ToXml()
+        {
+            string remoteHost = _mapping.PublicIP.Equals(IPAddress.None)
+                                    ? string.Empty
+                                    : _mapping.PublicIP.ToString();
+
+            return new Dictionary<string, object>
+                       {
+                           {"NewRemoteHost", remoteHost},
+                           {"NewExternalPort", _mapping.PublicPort},
+                           {"NewProtocol", _mapping.Protocol == Protocol.Tcp ? "TCP" : "UDP"},
+                           {"NewInternalPort", _mapping.PrivatePort},
+                           {"NewInternalClient", _mapping.PrivateIP},
+                           {"NewEnabled", 1},
+                           {"NewPortMappingDescription", _mapping.Description},
+                           {"NewLeaseDuration", _mapping.Lifetime}
+                       };
+        }
     }
 }

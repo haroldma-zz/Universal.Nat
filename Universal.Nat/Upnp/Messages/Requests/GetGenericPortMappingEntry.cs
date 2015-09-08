@@ -1,8 +1,10 @@
 //
 // Authors:
-//   Alan McGovern alan.mcgovern@gmail.com
+//   Alan McGovern  alan.mcgovern@gmail.com
+//   Lucas Ontivero lucas.ontivero@gmail.com
 //
 // Copyright (C) 2006 Alan McGovern
+// Copyright (C) 2014 Lucas Ontivero
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -24,30 +26,25 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System.Net;
-using System.Text;
+using System.Collections.Generic;
 
-namespace Universal.Nat.Upnp.Messages.Requests
+namespace Open.Nat
 {
-    internal class GetGenericPortMappingEntry : MessageBase
+    internal class GetGenericPortMappingEntry : RequestMessageBase
     {
         private readonly int _index;
 
-        public GetGenericPortMappingEntry(int index, UpnpNatDevice device)
-            : base(device)
+        public GetGenericPortMappingEntry(int index)
         {
             _index = index;
         }
 
-        public override WebRequest Encode(out byte[] body)
+        public override IDictionary<string, object> ToXml()
         {
-            var sb = new StringBuilder(128);
-            var writer = CreateWriter(sb);
-
-            WriteFullElement(writer, "NewPortMappingIndex", _index.ToString());
-
-            writer.Flush();
-            return CreateRequest("GetGenericPortMappingEntry", sb.ToString(), out body);
+            return new Dictionary<string, object>
+                       {
+                           {"NewPortMappingIndex", _index}
+                       };
         }
     }
 }

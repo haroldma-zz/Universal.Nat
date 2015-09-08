@@ -1,8 +1,10 @@
 //
 // Authors:
-//   Alan McGovern alan.mcgovern@gmail.com
+//   Alan McGovern  alan.mcgovern@gmail.com
+//   Lucas Ontivero lucas.ontivero@gmail.com
 //
 // Copyright (C) 2006 Alan McGovern
+// Copyright (C) 2014 Lucas Ontivero
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -25,55 +27,41 @@
 //
 
 using System;
-using System.Net;
+using System.Xml;
 using System.Xml.Linq;
-using Universal.Nat.Enums;
 
-namespace Universal.Nat.Upnp.Messages.Responses
+namespace Open.Nat
 {
-    internal class GetGenericPortMappingEntryResponseMessage : MessageBase
+    internal class GetPortMappingEntryResponseMessage : ResponseMessageBase
     {
-        public GetGenericPortMappingEntryResponseMessage(XNamespace ns, XContainer container, bool genericMapping)
-            : base(null)
+        internal GetPortMappingEntryResponseMessage(XDocument response, string serviceType, bool genericMapping)
+            : base(response, serviceType, genericMapping ? "GetGenericPortMappingEntryResponseMessage" : "GetSpecificPortMappingEntryResponseMessage")
         {
-            RemoteHost = (genericMapping) ? container.Element(ns + "NewRemoteHost").Value : string.Empty;
-            ExternalPort = (genericMapping)
-                ? Convert.ToInt32(container.Element(ns + "NewExternalPort").Value)
-                : -1;
+            var data = GetNode();
+
+            RemoteHost = (genericMapping) ? data.Element("NewRemoteHost").Value : string.Empty;
+            ExternalPort = (genericMapping) ? Convert.ToInt32(data.Element("NewExternalPort").Value) : ushort.MaxValue;
             if (genericMapping)
-                Protocol = container.Element(ns + "NewProtocol")
-                    .Value.Equals("TCP", StringComparison.OrdinalIgnoreCase)
-                    ? Protocol.Tcp
-                    : Protocol.Udp;
+                Protocol = data.Element("NewProtocol").Value.Equals("TCP", StringComparison.OrdinalIgnoreCase)
+                               ? Protocol.Tcp
+                               : Protocol.Udp;
             else
                 Protocol = Protocol.Udp;
 
-            InternalPort = Convert.ToInt32(container.Element(ns + "NewInternalPort").Value);
-            InternalClient = container.Element(ns + "NewInternalClient").Value;
-            Enabled = container.Element(ns + "NewEnabled").Value == "1";
-            PortMappingDescription = container.Element(ns + "NewPortMappingDescription").Value;
-            LeaseDuration = Convert.ToInt32(container.Element(ns + "NewLeaseDuration").Value);
+            InternalPort = Convert.ToInt32(data.Element("NewInternalPort").Value);
+            InternalClient = data.Element("NewInternalClient").Value;
+            Enabled = data.Element("NewEnabled").Value == "1";
+            PortMappingDescription = data.Element("NewPortMappingDescription").Value;
+            LeaseDuration = Convert.ToInt32(data.Element("NewLeaseDuration").Value);
         }
 
-        public string RemoteHost { get; }
-
-        public int ExternalPort { get; }
-
-        public Protocol Protocol { get; }
-
-        public int InternalPort { get; }
-
-        public string InternalClient { get; }
-
-        public bool Enabled { get; }
-
-        public string PortMappingDescription { get; }
-
-        public int LeaseDuration { get; }
-
-        public override WebRequest Encode(out byte[] body)
-        {
-            throw new NotImplementedException();
-        }
+        public string RemoteHost { get; private set; }
+        public int ExternalPort { get; private set; }
+        public Protocol Protocol { get; private set; }
+        public int InternalPort { get; private set; }
+        public string InternalClient { get; private set; }
+        public bool Enabled { get; private set; }
+        public string PortMappingDescription { get; private set; }
+        public int LeaseDuration { get; private set; }
     }
 }

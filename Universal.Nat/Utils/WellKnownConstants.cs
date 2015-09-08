@@ -1,9 +1,7 @@
-//
+﻿//
 // Authors:
-//   Alan McGovern  alan.mcgovern@gmail.com
-//   Lucas Ontivero lucas.ontivero@gmail.com
+//   Lucas Ontivero lucasontivero@gmail.com 
 //
-// Copyright (C) 2006 Alan McGovern
 // Copyright (C) 2014 Lucas Ontivero
 //
 // Permission is hereby granted, free of charge, to any person obtaining
@@ -26,27 +24,13 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System.Collections.Generic;
+using System.Net;
 
 namespace Open.Nat
 {
-    internal class DeletePortMappingRequestMessage : RequestMessageBase
+    internal static class WellKnownConstants
     {
-        private readonly Mapping _mapping;
-
-        public DeletePortMappingRequestMessage(Mapping mapping)
-        {
-            _mapping = mapping;
-        }
-
-        public override IDictionary<string, object> ToXml()
-        {
-            return new Dictionary<string, object>
-                       {
-                           {"NewRemoteHost", string.Empty},
-                           {"NewExternalPort", _mapping.PublicPort},
-                           {"NewProtocol", _mapping.Protocol == Protocol.Tcp ? "TCP" : "UDP"}
-                       };
-        }
+        public static IPAddress IPv4MulticastAddress = IPAddress.Parse("239.255.255.250");
+        public static IPEndPoint NatPmpEndPoint = new IPEndPoint(IPAddress.Parse("192.168.0.1"), 5351);
     }
 }

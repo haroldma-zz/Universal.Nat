@@ -1,8 +1,10 @@
 //
 // Authors:
-//   Alan McGovern alan.mcgovern@gmail.com
+//   Alan McGovern  alan.mcgovern@gmail.com
+//   Lucas Ontivero lucas.ontivero@gmail.com
 //
 // Copyright (C) 2006 Alan McGovern
+// Copyright (C) 2014 Lucas Ontivero
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -24,24 +26,21 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System;
 using System.Net;
+using System.Xml;
+using System.Xml.Linq;
 
-namespace Universal.Nat.Upnp.Messages.Responses
+namespace Open.Nat
 {
-    internal class GetExternalIPAddressResponseMessage : MessageBase
+    internal class GetExternalIPAddressResponseMessage : ResponseMessageBase
     {
-        public GetExternalIPAddressResponseMessage(string ip)
-            : base(null)
+        public GetExternalIPAddressResponseMessage(XDocument response, string serviceType)
+            : base(response, serviceType, "GetExternalIPAddressResponseMessage")
         {
+            string ip = GetNode().Element("NewExternalIPAddress").Value;
             ExternalIPAddress = IPAddress.Parse(ip);
         }
 
-        public IPAddress ExternalIPAddress { get; }
-
-        public override WebRequest Encode(out byte[] body)
-        {
-            throw new NotImplementedException();
-        }
+        public IPAddress ExternalIPAddress { get; private set; }
     }
 }

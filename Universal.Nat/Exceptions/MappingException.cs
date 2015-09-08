@@ -1,8 +1,10 @@
 //
 // Authors:
-//   Alan McGovern alan.mcgovern@gmail.com
+//   Alan McGovern  alan.mcgovern@gmail.com
+//   Lucas Ontivero lucas.ontivero@gmail.com
 //
 // Copyright (C) 2006 Alan McGovern
+// Copyright (C) 2014 Lucas Ontivero
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -25,34 +27,44 @@
 //
 
 using System;
+using System.Runtime.Serialization;
 
-namespace Universal.Nat.Exceptions
+namespace Open.Nat
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class MappingException : Exception
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public int ErrorCode { get; private set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string ErrorText { get; private set; }
 
         #region Constructors
 
-        public MappingException()
+        internal MappingException()
         {
         }
 
-        public MappingException(string message)
+        internal MappingException(string message)
             : base(message)
         {
         }
 
-        public MappingException(int errorCode, string errorText)
+        internal MappingException(int errorCode, string errorText)
             : base(string.Format("Error {0}: {1}", errorCode, errorText))
         {
             ErrorCode = errorCode;
             ErrorText = errorText;
         }
 
-        public MappingException(string message, Exception innerException)
+        internal MappingException(string message, Exception innerException)
             : base(message, innerException)
         {
         }

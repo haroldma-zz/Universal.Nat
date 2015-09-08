@@ -1,9 +1,7 @@
 //
 // Authors:
-//   Alan McGovern  alan.mcgovern@gmail.com
-//   Lucas Ontivero lucas.ontivero@gmail.com
+//   Lucas Ontivero lucasontivero@gmail.com 
 //
-// Copyright (C) 2006 Alan McGovern
 // Copyright (C) 2014 Lucas Ontivero
 //
 // Permission is hereby granted, free of charge, to any person obtaining
@@ -25,28 +23,15 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-
-using System.Collections.Generic;
-
 namespace Open.Nat
 {
-    internal class DeletePortMappingRequestMessage : RequestMessageBase
+    sealed class Finalizer 
     {
-        private readonly Mapping _mapping;
-
-        public DeletePortMappingRequestMessage(Mapping mapping)
+        ~Finalizer() 
         {
-            _mapping = mapping;
-        }
-
-        public override IDictionary<string, object> ToXml()
-        {
-            return new Dictionary<string, object>
-                       {
-                           {"NewRemoteHost", string.Empty},
-                           {"NewExternalPort", _mapping.PublicPort},
-                           {"NewProtocol", _mapping.Protocol == Protocol.Tcp ? "TCP" : "UDP"}
-                       };
+            NatDiscoverer.TraceSource.LogInfo("Closing ports opened in this session");
+            NatDiscoverer.RenewTimer.Dispose();
+            NatDiscoverer.ReleaseSessionMappings();
         }
     }
 }

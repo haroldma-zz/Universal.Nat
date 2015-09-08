@@ -1,8 +1,10 @@
 //
 // Authors:
-//   Alan McGovern alan.mcgovern@gmail.com
+//   Alan McGovern  alan.mcgovern@gmail.com
+//   Lucas Ontivero lucas.ontivero@gmail.com
 //
 // Copyright (C) 2006 Alan McGovern
+// Copyright (C) 2014 Lucas Ontivero
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -24,24 +26,15 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System.Net;
+using System.Collections.Generic;
 
-namespace Universal.Nat.Upnp.Messages.Requests
+namespace Open.Nat
 {
-    internal class GetExternalIPAddressMessage : MessageBase
+    internal class GetExternalIPAddressRequestMessage : RequestMessageBase
     {
-        #region Constructors
-
-        public GetExternalIPAddressMessage(UpnpNatDevice device)
-            : base(device)
+        public override IDictionary<string, object> ToXml()
         {
-        }
-
-        #endregion
-
-        public override WebRequest Encode(out byte[] body)
-        {
-            return CreateRequest("GetExternalIPAddress", string.Empty, out body);
+            return new Dictionary<string, object>();
         }
     }
 }

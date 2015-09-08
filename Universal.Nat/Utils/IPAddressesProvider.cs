@@ -1,9 +1,7 @@
-//
+﻿//
 // Authors:
-//   Alan McGovern  alan.mcgovern@gmail.com
-//   Lucas Ontivero lucas.ontivero@gmail.com
+//   Lucas Ontivero lucasontivero@gmail.com 
 //
-// Copyright (C) 2006 Alan McGovern
 // Copyright (C) 2014 Lucas Ontivero
 //
 // Permission is hereby granted, free of charge, to any person obtaining
@@ -26,27 +24,40 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
 
 namespace Open.Nat
 {
-    internal class DeletePortMappingRequestMessage : RequestMessageBase
+    internal class IPAddressesProvider : IIPAddressesProvider
     {
-        private readonly Mapping _mapping;
+        #region IIPAddressesProvider Members
 
-        public DeletePortMappingRequestMessage(Mapping mapping)
+        public IEnumerable<IPAddress> UnicastAddresses()
         {
-            _mapping = mapping;
+            return new []
+            {
+                IPAddress.Parse("239.255.255.250"),
+                IPAddress.Parse("ff02::c"),
+                IPAddress.Parse("ff05::c"),
+                IPAddress.Parse("ff08::c"),
+            };
         }
 
-        public override IDictionary<string, object> ToXml()
+      /*  public IEnumerable<IPAddress> DnsAddresses()
         {
-            return new Dictionary<string, object>
-                       {
-                           {"NewRemoteHost", string.Empty},
-                           {"NewExternalPort", _mapping.PublicPort},
-                           {"NewProtocol", _mapping.Protocol == Protocol.Tcp ? "TCP" : "UDP"}
-                       };
+            return IPAddresses(p => p.DnsAddresses);
         }
+
+        public IEnumerable<IPAddress> GatewayAddresses()
+        {
+            return IPAddresses(p => p.GatewayAddresses.Select(x => x.Address));
+        }*/
+
+        #endregion
     }
 }

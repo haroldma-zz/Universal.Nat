@@ -1,8 +1,8 @@
 //
 // Authors:
-//   Alan McGovern alan.mcgovern@gmail.com
+//   Lucas Ontivero lucas.ontivero@gmail.com
 //
-// Copyright (C) 2006 Alan McGovern
+// Copyright (C) 2014 Lucas Ontivero
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -24,38 +24,40 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System.Diagnostics;
-using System.Net;
+using System;
+using System.Runtime.Serialization;
 
-namespace Universal.Nat.Upnp.Messages
+namespace Open.Nat
 {
-    internal class GetServicesMessage : MessageBase
+    /// <summary>
+    /// 
+    /// </summary>
+    public class NatDeviceNotFoundException : Exception
     {
-        private readonly EndPoint _hostAddress;
-        private readonly string _servicesDescriptionUrl;
+		/// <summary>
+		/// 
+		/// </summary>
+		public NatDeviceNotFoundException()
+		{
+		}
 
-        public GetServicesMessage(string description, EndPoint hostAddress)
-            : base(null)
-        {
-            if (string.IsNullOrEmpty(description))
-                Debug.WriteLine("Description is null");
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="message"></param>
+		public NatDeviceNotFoundException(string message)
+			: base(message)
+		{
+		}
 
-            if (hostAddress == null)
-                Debug.WriteLine("hostaddress is null");
-
-            _servicesDescriptionUrl = description;
-            _hostAddress = hostAddress;
-        }
-
-
-        public override WebRequest Encode(out byte[] body)
-        {
-            var req = (HttpWebRequest) WebRequest.Create("http://" + _hostAddress + _servicesDescriptionUrl);
-            req.Headers["ACCEPT-LANGUAGE"] = "en";
-            req.Method = "GET";
-
-            body = new byte[0];
-            return req;
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="message"></param>
+		/// <param name="innerException"></param>
+		public NatDeviceNotFoundException(string message, Exception innerException)
+			: base(message, innerException)
+		{
+		}
     }
 }

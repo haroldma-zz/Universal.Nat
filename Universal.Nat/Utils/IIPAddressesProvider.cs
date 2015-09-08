@@ -1,8 +1,8 @@
-//
+﻿//
 // Authors:
-//   Alan McGovern alan.mcgovern@gmail.com
+//   Lucas Ontivero lucasontivero@gmail.com 
 //
-// Copyright (C) 2006 Alan McGovern
+// Copyright (C) 2014 Lucas Ontivero
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -24,26 +24,15 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-
-using System;
+using System.Collections.Generic;
 using System.Net;
 
-namespace Universal.Nat.Upnp.Messages.Responses
+namespace Open.Nat
 {
-    internal class CreatePortMappingResponseMessage : MessageBase
+    internal interface IIPAddressesProvider
     {
-        #region Constructors
-
-        public CreatePortMappingResponseMessage()
-            : base(null)
-        {
-        }
-
-        #endregion
-
-        public override WebRequest Encode(out byte[] body)
-        {
-            throw new NotImplementedException();
-        }
+       /* IEnumerable<IPAddress> DnsAddresses();
+        IEnumerable<IPAddress> GatewayAddresses();*/
+        IEnumerable<IPAddress> UnicastAddresses();
     }
 }

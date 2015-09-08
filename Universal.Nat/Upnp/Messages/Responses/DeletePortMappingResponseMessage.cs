@@ -1,8 +1,8 @@
 //
 // Authors:
-//   Alan McGovern alan.mcgovern@gmail.com
+//   Lucas Ontivero lucas.ontivero@gmail.com
 //
-// Copyright (C) 2006 Alan McGovern
+// Copyright (C) 2014 Lucas Ontivero
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -24,22 +24,14 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using System.Xml.Linq;
 
-using System;
-using System.Net;
-
-namespace Universal.Nat.Upnp.Messages.Responses
+namespace Open.Nat
 {
-    internal class DeletePortMapResponseMessage : MessageBase
+    internal class DeletePortMappingResponseMessage : ResponseMessageBase
     {
-        public DeletePortMapResponseMessage()
-            : base(null)
+        public DeletePortMappingResponseMessage(XDocument response, string serviceType, string typeName) : base(response, serviceType, typeName)
         {
-        }
-
-        public override WebRequest Encode(out byte[] body)
-        {
-            throw new NotSupportedException();
         }
     }
 }

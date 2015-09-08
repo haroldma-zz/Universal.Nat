@@ -1,10 +1,8 @@
 //
 // Authors:
-//   Alan McGovern  alan.mcgovern@gmail.com
-//   Lucas Ontivero lucas.ontivero@gmail.com
+//   Alan McGovern alan.mcgovern@gmail.com
 //
 // Copyright (C) 2006 Alan McGovern
-// Copyright (C) 2014 Lucas Ontivero
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -26,27 +24,20 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System.Collections.Generic;
-
 namespace Open.Nat
 {
-    internal class DeletePortMappingRequestMessage : RequestMessageBase
+    /// <summary>
+    /// Protocol to allow/disallow 
+    /// </summary>
+    public enum Protocol
     {
-        private readonly Mapping _mapping;
-
-        public DeletePortMappingRequestMessage(Mapping mapping)
-        {
-            _mapping = mapping;
-        }
-
-        public override IDictionary<string, object> ToXml()
-        {
-            return new Dictionary<string, object>
-                       {
-                           {"NewRemoteHost", string.Empty},
-                           {"NewExternalPort", _mapping.PublicPort},
-                           {"NewProtocol", _mapping.Protocol == Protocol.Tcp ? "TCP" : "UDP"}
-                       };
-        }
+        /// <summary>
+        /// Transport Control Protocol
+        /// </summary>
+        Tcp,
+        /// <summary>
+        /// Datagram Protocol
+        /// </summary>
+        Udp
     }
 }

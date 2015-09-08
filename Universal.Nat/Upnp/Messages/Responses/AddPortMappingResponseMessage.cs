@@ -1,8 +1,8 @@
 //
 // Authors:
-//   Alan McGovern alan.mcgovern@gmail.com
+//   Lucas Ontivero lucas.ontivero@gmail.com
 //
-// Copyright (C) 2006 Alan McGovern
+// Copyright (C) 2014 Lucas Ontivero
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -24,35 +24,14 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System;
-using System.Net;
+using System.Xml.Linq;
 
-namespace Universal.Nat.Upnp.Messages
+namespace Open.Nat
 {
-    internal class ErrorMessage : MessageBase
+    internal class AddPortMappingResponseMessage : ResponseMessageBase
     {
-        #region Constructors
-
-        public ErrorMessage(int errorCode, string description)
-            : base(null)
+        public AddPortMappingResponseMessage(XDocument response, string serviceType, string typeName) : base(response, serviceType, typeName)
         {
-            Description = description;
-            ErrorCode = errorCode;
         }
-
-        #endregion
-
-        public override WebRequest Encode(out byte[] body)
-        {
-            throw new NotImplementedException();
-        }
-
-        #region Member Variables
-
-        public string Description { get; }
-
-        public int ErrorCode { get; }
-
-        #endregion
     }
 }
