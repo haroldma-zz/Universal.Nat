@@ -4,8 +4,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Universal.Nat.Exceptions;
+using Universal.Nat.Upnp;
+using Universal.Nat.Utils;
 
-namespace Open.Nat
+namespace Universal.Nat
 {
     public enum TraceEventType
     {
@@ -72,7 +75,7 @@ namespace Open.Nat
         public async Task<NatDevice> DiscoverDeviceAsync()
         {
             var cts = new CancellationTokenSource(3*1000);
-            return await DiscoverDeviceAsync(PortMapper.Pmp | PortMapper.Upnp, cts);
+            return await DiscoverDeviceAsync(PortMapper.Pmp | PortMapper.Upnp, cts).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -93,7 +96,7 @@ namespace Open.Nat
             Guard.IsTrue(portMapper.HasFlag(PortMapper.Upnp) || portMapper.HasFlag(PortMapper.Pmp), "portMapper");
             Guard.IsNotNull(cancellationTokenSource, "cancellationTokenSource");
 
-            var devices = await DiscoverAsync(portMapper, true, cancellationTokenSource);
+            var devices = await DiscoverAsync(portMapper, true, cancellationTokenSource).ConfigureAwait(false);
             var device = devices.FirstOrDefault();
             if (device == null)
             {
@@ -119,7 +122,7 @@ namespace Open.Nat
             Guard.IsTrue(portMapper.HasFlag(PortMapper.Upnp) || portMapper.HasFlag(PortMapper.Pmp), "portMapper");
             Guard.IsNotNull(cancellationTokenSource, "cancellationTokenSource");
 
-            var devices = await DiscoverAsync(portMapper, false, cancellationTokenSource);
+            var devices = await DiscoverAsync(portMapper, false, cancellationTokenSource).ConfigureAwait(false);
             return devices.ToArray();
         }
 
@@ -142,10 +145,10 @@ namespace Open.Nat
                 searcherTasks.Add(pmpSearcher.Search(cts.Token));*/
             }
 
-            await Task.WhenAll(searcherTasks);
-            TraceSource.LogInfo("Stop Discovery");
+            var devices = (await Task.WhenAll(searcherTasks).ConfigureAwait(false)).SelectMany(enumerable => enumerable.ToList()).ToList();
 
-            var devices = searcherTasks.SelectMany(x => x.Result);
+            TraceSource.LogInfo("Stop Discovery");
+            
             foreach (var device in devices)
             {
                 var key = device.ToString();
@@ -190,7 +193,7 @@ namespace Open.Nat
             {
                 foreach (var device in Devices.Values)
                 {
-                    await device.RenewMappings();
+                    await device.RenewMappings().ConfigureAwait(false);
                 }
             });
         }

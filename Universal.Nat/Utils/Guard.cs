@@ -1,6 +1,6 @@
 using System;
 
-namespace Open.Nat
+namespace Universal.Nat.Utils
 {
     internal class Guard
     {

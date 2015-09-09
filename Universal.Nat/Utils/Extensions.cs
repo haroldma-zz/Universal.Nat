@@ -25,14 +25,13 @@
 //
 
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace Open.Nat
+namespace Universal.Nat.Utils
 {
     internal static class StreamExtensions
     {
@@ -102,15 +101,15 @@ namespace Open.Nat
         public static async Task<TResult> TimeoutAfter<TResult>(this Task<TResult> task, TimeSpan timeout)
         {
 #if DEBUG
-            return await task;
+            return await task.ConfigureAwait(false);
 #endif
             var timeoutCancellationTokenSource = new CancellationTokenSource();
 
-            Task completedTask = await Task.WhenAny(task, Task.Delay(timeout, timeoutCancellationTokenSource.Token));
+            Task completedTask = await Task.WhenAny(task, Task.Delay(timeout, timeoutCancellationTokenSource.Token)).ConfigureAwait(false);
             if (completedTask == task)
             {
                 timeoutCancellationTokenSource.Cancel();
-                return await task;
+                return await task.ConfigureAwait(false);
             }
             throw new TimeoutException(
                 "The operation has timed out. The network is broken, router has gone or is too busy.");

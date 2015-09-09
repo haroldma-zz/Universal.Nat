@@ -30,15 +30,17 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Net;
-using System.Diagnostics;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
-using System.Xml;
+using System.Threading.Tasks;
 using System.Xml.Linq;
+using Universal.Nat.Discovery;
+using Universal.Nat.Upnp.Messages;
+using Universal.Nat.Utils;
 
-namespace Open.Nat
+namespace Universal.Nat.Upnp
 {
     internal class UpnpSearcher : Searcher
     {
@@ -113,7 +115,7 @@ namespace Open.Nat
             }
         }
 
-        public override NatDevice AnalyseReceivedResponse(IPAddress localAddress, byte[] response, IPEndPoint endpoint)
+        public override async Task<NatDevice> AnalyseReceivedResponse(IPAddress localAddress, byte[] response, IPEndPoint endpoint)
         {
             // Convert it to a string for easy parsing
             string dataString = null;
@@ -157,7 +159,7 @@ namespace Open.Nat
 
                 NatDiscoverer.TraceSource.LogInfo("{0}:{1}: Fetching service list", locationUri.Host, locationUri.Port );
 
-                var deviceInfo = BuildUpnpNatDeviceInfo(localAddress, locationUri);
+                var deviceInfo = await BuildUpnpNatDeviceInfo(localAddress, locationUri).ConfigureAwait(false);
 
                 UpnpNatDevice device;
                 lock (_devices)
@@ -193,8 +195,8 @@ namespace Open.Nat
 
             return services.Any();
         }
-
-        private UpnpNatDeviceInfo BuildUpnpNatDeviceInfo(IPAddress localAddress, Uri location)
+        
+        private async Task<UpnpNatDeviceInfo> BuildUpnpNatDeviceInfo(IPAddress localAddress, Uri location)
         {
             NatDiscoverer.TraceSource.LogInfo("Found device at: {0}", location.ToString());
 
@@ -207,7 +209,7 @@ namespace Open.Nat
                 request.Headers["ACCEPT-LANGUAGE"] = "en";
                 request.Method = "GET";
 
-                response = request.GetResponseAsync().Result;
+                response = await request.GetResponseAsync().ConfigureAwait(false);
 
                 var httpresponse = response as HttpWebResponse;
 
@@ -221,21 +223,25 @@ namespace Open.Nat
 
                 NatDiscoverer.TraceSource.LogInfo("{0}: Parsed services list", hostEndPoint);
 
-                //urn:schemas-upnp-org:device-1-0
-                var services = xmldoc.Elements("//ns:service");
+                var ns = (XNamespace)"urn:schemas-upnp-org:device-1-0";
 
-                foreach (var service in services)
-                {
-                    var serviceType = service.Element("serviceType").Value;
-                    if (!IsValidControllerService(serviceType)) continue;
+                foreach (var node in xmldoc.Descendants(ns + "serviceList"))
+                { 
+                    //Go through each service there
+                    foreach (var service in node.Elements())
+                    {
+                        var serviceType = service.Element(ns + "serviceType")?.Value;
+                        if (!IsValidControllerService(serviceType)) continue;
 
-                    NatDiscoverer.TraceSource.LogInfo("{0}: Found service: {1}", hostEndPoint, serviceType);
+                        NatDiscoverer.TraceSource.LogInfo("{0}: Found service: {1}", hostEndPoint, serviceType);
 
-                    var serviceControlUrl = service.Element("controlURL").Value;
-                    NatDiscoverer.TraceSource.LogInfo("{0}: Found upnp service at: {1}", hostEndPoint, serviceControlUrl);
+                        var serviceControlUrl = service.Element(ns + "controlURL")?.Value;
+                        NatDiscoverer.TraceSource.LogInfo("{0}: Found upnp service at: {1}", hostEndPoint,
+                            serviceControlUrl);
 
-                    NatDiscoverer.TraceSource.LogInfo("{0}: Handshake Complete", hostEndPoint);
-                    return new UpnpNatDeviceInfo(localAddress, location, serviceControlUrl, serviceType);
+                        NatDiscoverer.TraceSource.LogInfo("{0}: Handshake Complete", hostEndPoint);
+                        return new UpnpNatDeviceInfo(localAddress, location, serviceControlUrl, serviceType);
+                    }
                 }
 
                 throw new Exception("No valid control service was found in the service descriptor document");

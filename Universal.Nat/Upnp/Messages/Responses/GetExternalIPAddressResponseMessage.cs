@@ -27,10 +27,9 @@
 //
 
 using System.Net;
-using System.Xml;
 using System.Xml.Linq;
 
-namespace Open.Nat
+namespace Universal.Nat.Upnp.Messages.Responses
 {
     internal class GetExternalIPAddressResponseMessage : ResponseMessageBase
     {

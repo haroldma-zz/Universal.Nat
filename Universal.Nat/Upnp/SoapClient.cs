@@ -26,16 +26,17 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml;
 using System.Xml.Linq;
+using Universal.Nat.Exceptions;
+using Universal.Nat.Utils;
 
-namespace Open.Nat
+namespace Universal.Nat.Upnp
 {
     internal class SoapClient
     {
@@ -57,13 +58,13 @@ namespace Open.Nat
 
             if (messageBody.Length > 0)
             {
-                using (var stream = await request.GetRequestStreamAsync())
+                using (var stream = await request.GetRequestStreamAsync().ConfigureAwait(false))
                 {
-                    await stream.WriteAsync(messageBody, 0, messageBody.Length);
+                    await stream.WriteAsync(messageBody, 0, messageBody.Length).ConfigureAwait(false);
                 }
             }
 
-            using(var response = await GetWebResponse(request))
+            using(var response = await GetWebResponse(request).ConfigureAwait(false))
             {
                 var stream = response.GetResponseStream();
                 var contentLength = response.ContentLength;
@@ -86,7 +87,7 @@ namespace Open.Nat
             WebResponse response;
             try
             {
-                response = await request.GetResponseAsync();
+                response = await request.GetResponseAsync().ConfigureAwait(false);
             }
             catch (WebException ex)
             {
@@ -140,13 +141,13 @@ namespace Open.Nat
             var doc = XDocument.Parse(response);
 
             // Error messages should be found under this namespace
-            //nsm.AddNamespace("errorNs", "urn:schemas-upnp-org:control-1-0");
+            var ns = (XNamespace) "urn:schemas-upnp-org:control-1-0";
 
             // Check to see if we have a fault code message.
-            if ((node = doc.Element("//errorNs:UPnPError")) != null)
+            if ((node = doc.Descendants(ns + "UPnPError").FirstOrDefault()) != null)
             {
-                int code = Convert.ToInt32(node.Element("errorCode").Value, CultureInfo.InvariantCulture);
-                string errorMessage = node.Element("errorDescription").Value;
+                int code = Convert.ToInt32(node.Element(ns + "errorCode").Value, CultureInfo.InvariantCulture);
+                string errorMessage = node.Element(ns + "errorDescription").Value;
                 NatDiscoverer.TraceSource.LogWarn("Server failed with error: {0} - {1}", code, errorMessage);
                 throw new MappingException(code, errorMessage);
             }

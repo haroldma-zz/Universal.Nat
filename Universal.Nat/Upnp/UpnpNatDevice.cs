@@ -32,8 +32,13 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+using Universal.Nat.Enums;
+using Universal.Nat.Exceptions;
+using Universal.Nat.Upnp.Messages.Requests;
+using Universal.Nat.Upnp.Messages.Responses;
+using Universal.Nat.Utils;
 
-namespace Open.Nat
+namespace Universal.Nat.Upnp
 {
     internal sealed class UpnpNatDevice : NatDevice
 	{
@@ -53,7 +58,7 @@ namespace Open.Nat
             var message = new GetExternalIPAddressRequestMessage();
             var responseData = await _soapClient
                 .InvokeAsync("GetExternalIPAddress", message.ToXml())
-                .TimeoutAfter(TimeSpan.FromSeconds(4));
+                .TimeoutAfter(TimeSpan.FromSeconds(4)).ConfigureAwait(false);
 
             var response = new GetExternalIPAddressResponseMessage(responseData, DeviceInfo.ServiceType);
             return response.ExternalIPAddress;
@@ -70,7 +75,7 @@ namespace Open.Nat
                 var message = new CreatePortMappingRequestMessage(mapping);
                 await _soapClient
                     .InvokeAsync("AddPortMapping", message.ToXml())
-                    .TimeoutAfter(TimeSpan.FromSeconds(4));
+                    .TimeoutAfter(TimeSpan.FromSeconds(4)).ConfigureAwait(false);
                 RegisterMapping(mapping);
             }
             catch(MappingException me)
@@ -82,17 +87,17 @@ namespace Open.Nat
                         mapping.Lifetime = 0;
                         // We create the mapping anyway. It must be released on shutdown.
                         mapping.LifetimeType = MappingLifetime.ForcedSession;
-                        CreatePortMapAsync(mapping);
+                        await CreatePortMapAsync(mapping);
                         break;
                     case UpnpConstants.SamePortValuesRequired:
                         NatDiscoverer.TraceSource.LogWarn("Same Port Values Required - Using internal port {0}", mapping.PrivatePort);
                         mapping.PublicPort = mapping.PrivatePort;
-                        CreatePortMapAsync(mapping);
+                        await CreatePortMapAsync(mapping);
                         break;
                     case UpnpConstants.RemoteHostOnlySupportsWildcard:
                         NatDiscoverer.TraceSource.LogWarn("Remote Host Only Supports Wildcard");
                         mapping.PublicIP = IPAddress.None;
-                        CreatePortMapAsync(mapping);
+                        await CreatePortMapAsync(mapping);
                         break;
                     case UpnpConstants.ExternalPortOnlySupportsWildcard:
                         NatDiscoverer.TraceSource.LogWarn("External Port Only Supports Wildcard");
@@ -120,7 +125,7 @@ namespace Open.Nat
                 var message = new DeletePortMappingRequestMessage(mapping);
                 await _soapClient
                     .InvokeAsync("DeletePortMapping", message.ToXml())
-                    .TimeoutAfter(TimeSpan.FromSeconds(4));
+                    .TimeoutAfter(TimeSpan.FromSeconds(4)).ConfigureAwait(false);
                 UnregisterMapping(mapping);
             }
 		    catch (MappingException e)
@@ -143,7 +148,7 @@ namespace Open.Nat
 
                     var responseData = await _soapClient
                         .InvokeAsync("GetGenericPortMappingEntry", message.ToXml())
-                        .TimeoutAfter(TimeSpan.FromSeconds(4));
+                        .TimeoutAfter(TimeSpan.FromSeconds(4)).ConfigureAwait(false);
 
                     var responseMessage = new GetPortMappingEntryResponseMessage(responseData, DeviceInfo.ServiceType, true);
 
@@ -192,7 +197,7 @@ namespace Open.Nat
                 var message = new GetSpecificPortMappingEntryRequestMessage(protocol, port);
                 var responseData = await _soapClient
                     .InvokeAsync("GetSpecificPortMappingEntry", message.ToXml())
-                    .TimeoutAfter(TimeSpan.FromSeconds(4));
+                    .TimeoutAfter(TimeSpan.FromSeconds(4)).ConfigureAwait(false);
 
                 var messageResponse = new GetPortMappingEntryResponseMessage(responseData, DeviceInfo.ServiceType, false);
 

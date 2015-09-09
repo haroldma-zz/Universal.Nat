@@ -23,12 +23,12 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
+
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 
-namespace Open.Nat
+namespace Universal.Nat.Upnp
 {
     class DiscoveryResponseMessage
     {

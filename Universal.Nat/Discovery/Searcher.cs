@@ -28,12 +28,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Networking.Connectivity;
+using Universal.Nat.EventArgs;
+using Universal.Nat.Utils;
 
-namespace Open.Nat
+namespace Universal.Nat.Discovery
 {
     internal abstract class Searcher
     {
@@ -44,7 +48,7 @@ namespace Open.Nat
 
         public async Task<IEnumerable<NatDevice>> Search(CancellationToken cancelationToken)
         {
-            await Task.Factory.StartNew(_ =>
+            await Task.Factory.StartNew(() =>
             {
                 NatDiscoverer.TraceSource.LogInfo("Searching for: {0}", GetType().Name);
                 while (!cancelationToken.IsCancellationRequested)
@@ -53,7 +57,7 @@ namespace Open.Nat
                     Receive(cancelationToken);
                 }
                 CloseSockets();
-            }, cancelationToken);
+            }).ConfigureAwait(false);
             return _devices;
         }
 
@@ -81,23 +85,45 @@ namespace Open.Nat
             {
                 if (cancelationToken.IsCancellationRequested) return;
 
-                var localHost = ((IPEndPoint) client.LocalEndPoint).Address;
+                var localHost = ((IPEndPoint)client.LocalEndPoint).Address;
+                var icp = NetworkInformation.GetInternetConnectionProfile();
+                if (icp?.NetworkAdapter != null)
+                {
+                    var hostname =
+                        NetworkInformation.GetHostNames()
+                            .SingleOrDefault(
+                                hn =>
+                                    hn.IPInformation?.NetworkAdapter != null && hn.IPInformation.NetworkAdapter.NetworkAdapterId
+                                    == icp.NetworkAdapter.NetworkAdapterId);
+                    localHost = IPAddress.Parse(hostname.CanonicalName);
+                }
+
+                var reset = new AutoResetEvent(false);
+                var buffer = new byte[ushort.MaxValue];
                 var receivedFrom = new IPEndPoint(IPAddress.None, 0);
                 var args = new SocketAsyncEventArgs {RemoteEndPoint = receivedFrom};
-                args.Completed += (sender, eventArgs) =>
+                args.SetBuffer(buffer, 0, buffer.Length);
+                args.Completed += async (sender, eventArgs) =>
                 {
-                    var buffer = eventArgs.Buffer;
-                    var device = AnalyseReceivedResponse(localHost, buffer, receivedFrom);
+                    reset.Set();
+                    if (eventArgs.SocketError != SocketError.Success)
+                    {
+                        NatDiscoverer.TraceSource.LogInfo("Socket Error: " + eventArgs.SocketError);
+                        return;
+                    }
+                    var bytes = eventArgs.Buffer.Take(eventArgs.BytesTransferred).ToArray();
+                    var device = await AnalyseReceivedResponse(localHost, bytes, receivedFrom).ConfigureAwait(false);
                     if (device != null) RaiseDeviceFound(device);
                 };
                 client.ReceiveFromAsync(args);
+                reset.WaitOne(5000);
             }
         }
 
 
         protected abstract void Discover(Socket client, CancellationToken cancelationToken);
 
-        public abstract NatDevice AnalyseReceivedResponse(IPAddress localAddress, byte[] response, IPEndPoint endpoint);
+        public abstract Task<NatDevice> AnalyseReceivedResponse(IPAddress localAddress, byte[] response, IPEndPoint endpoint);
 
         public void CloseSockets()
         {

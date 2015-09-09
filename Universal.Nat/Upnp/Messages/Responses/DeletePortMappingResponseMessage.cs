@@ -26,7 +26,7 @@
 
 using System.Xml.Linq;
 
-namespace Open.Nat
+namespace Universal.Nat.Upnp.Messages.Responses
 {
     internal class DeletePortMappingResponseMessage : ResponseMessageBase
     {

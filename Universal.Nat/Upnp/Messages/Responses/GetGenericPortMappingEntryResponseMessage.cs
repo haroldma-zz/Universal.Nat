@@ -27,10 +27,10 @@
 //
 
 using System;
-using System.Xml;
 using System.Xml.Linq;
+using Universal.Nat.Enums;
 
-namespace Open.Nat
+namespace Universal.Nat.Upnp.Messages.Responses
 {
     internal class GetPortMappingEntryResponseMessage : ResponseMessageBase
     {

@@ -27,8 +27,9 @@
 //
 
 using System.Collections.Generic;
+using Universal.Nat.Enums;
 
-namespace Open.Nat
+namespace Universal.Nat.Upnp.Messages.Requests
 {
     internal class DeletePortMappingRequestMessage : RequestMessageBase
     {

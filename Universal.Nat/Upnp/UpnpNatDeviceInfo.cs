@@ -26,8 +26,9 @@
 
 using System;
 using System.Net;
+using Universal.Nat.Utils;
 
-namespace Open.Nat
+namespace Universal.Nat.Upnp
 {
     internal class UpnpNatDeviceInfo
     {

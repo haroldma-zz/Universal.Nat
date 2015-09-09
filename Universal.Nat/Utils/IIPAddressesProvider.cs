@@ -27,7 +27,7 @@
 using System.Collections.Generic;
 using System.Net;
 
-namespace Open.Nat
+namespace Universal.Nat.Utils
 {
     internal interface IIPAddressesProvider
     {

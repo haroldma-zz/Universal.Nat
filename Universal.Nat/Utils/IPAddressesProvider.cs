@@ -24,14 +24,10 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Net.NetworkInformation;
-using System.Net.Sockets;
 
-namespace Open.Nat
+namespace Universal.Nat.Utils
 {
     internal class IPAddressesProvider : IIPAddressesProvider
     {
@@ -41,10 +37,7 @@ namespace Open.Nat
         {
             return new []
             {
-                IPAddress.Parse("239.255.255.250"),
-                IPAddress.Parse("ff02::c"),
-                IPAddress.Parse("ff05::c"),
-                IPAddress.Parse("ff08::c"),
+                IPAddress.Any
             };
         }
 

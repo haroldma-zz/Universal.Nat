@@ -33,8 +33,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Universal.Nat.Enums;
+using Universal.Nat.Exceptions;
+using Universal.Nat.Utils;
 
-namespace Open.Nat
+namespace Universal.Nat
 {
     /// <summary>
     /// Represents a NAT device and provides access to the operation set that allows
@@ -161,7 +164,7 @@ namespace Open.Nat
             foreach (var mapping in mappings.ToArray())
             {
                 var m = mapping;
-                await RenewMapping(m);
+                await RenewMapping(m).ConfigureAwait(false);
             }
         }
 
@@ -173,7 +176,7 @@ namespace Open.Nat
                 renewMapping.Expiration = DateTime.UtcNow.AddSeconds(mapping.Lifetime);
 
                 NatDiscoverer.TraceSource.LogInfo("Renewing mapping {0}", renewMapping);
-                await CreatePortMapAsync(renewMapping);
+                await CreatePortMapAsync(renewMapping).ConfigureAwait(false);
                 NatDiscoverer.TraceSource.LogInfo("Next renew scheduled at: {0}",
                                                   renewMapping.Expiration.ToLocalTime().TimeOfDay);
             }

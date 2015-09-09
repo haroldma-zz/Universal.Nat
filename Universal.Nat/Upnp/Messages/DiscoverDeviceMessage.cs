@@ -26,7 +26,7 @@
 
 using System.Globalization;
 
-namespace Open.Nat
+namespace Universal.Nat.Upnp.Messages
 {
     internal static class DiscoverDeviceMessage
     {

@@ -25,10 +25,9 @@
 //
 
 using System;
-using System.Xml;
 using System.Xml.Linq;
 
-namespace Open.Nat
+namespace Universal.Nat.Upnp
 {
     internal abstract class ResponseMessageBase
     {

@@ -27,9 +27,8 @@
 //
 
 using System;
-using System.Runtime.Serialization;
 
-namespace Open.Nat
+namespace Universal.Nat.Exceptions
 {
     /// <summary>
     /// 
