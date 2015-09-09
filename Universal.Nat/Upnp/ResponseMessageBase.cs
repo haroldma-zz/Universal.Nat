@@ -25,6 +25,7 @@
 //
 
 using System;
+using System.Linq;
 using System.Xml.Linq;
 
 namespace Universal.Nat.Upnp
@@ -46,7 +47,8 @@ namespace Universal.Nat.Upnp
         {
             string typeName = _typeName;
             string messageName = typeName.Substring(0, typeName.Length - "Message".Length);
-            var node = _document.Element("//responseNs:" + messageName);
+            var ns = (XNamespace)ServiceType;
+            var node = _document.Descendants(ns + messageName).FirstOrDefault();
             if (node == null) throw new InvalidOperationException("The response is invalid: " + messageName);
 
             return node;
